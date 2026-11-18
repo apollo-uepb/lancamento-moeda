@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+@theme static {
+  --color-brand: #1e88e5;
+  --color-brand-dark: #1565c0;
+  --color-coin: #ffd54f;
+  --color-coin-edge: #f9a825;
+  --color-coin-text: #7a4f00;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  overflow-x: hidden;
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+}
+
+/* ------------------------------------------------------------------ */
+/* Moeda 3D (só CSS). O resultado já foi sorteado; o CSS só anima.      */
+/* ------------------------------------------------------------------ */
+.coin-stage {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: calc(var(--coin-size) + var(--jump-height) + 28px);
+  padding-bottom: 14px;
+}
+
+.coin-shadow {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 90px;
+  height: 9px;
+  margin-left: -45px;
+  border-radius: 50%;
+  background: rgb(100 116 139);
+  opacity: 0.6;
+}
+
+.coin-jump {
+  perspective: 900px;
+  will-change: transform;
+}
+
+.coin {
+  position: relative;
+  width: var(--coin-size);
+  height: var(--coin-size);
+  transform-style: preserve-3d;
+  transform: rotateX(var(--coin-angle));
+  will-change: transform;
+}
+
+.coin-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 6px solid var(--color-coin-edge);
+  background: var(--color-coin);
+  color: var(--color-coin-text);
+  font-weight: 800;
+  font-size: 21px;
+  letter-spacing: 2px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.coin-face::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  border: 2px solid var(--color-coin-edge);
+}
+
+.coin-back {
+  transform: rotateX(180deg);
+}
+
+.coin-animating .coin {
+  animation: coin-spin var(--spin-duration) ease-out forwards;
+}
+.coin-animating .coin-jump {
+  animation: coin-jump var(--spin-duration) linear forwards;
+}
+.coin-animating .coin-shadow {
+  animation: coin-shadow var(--spin-duration) linear forwards;
+}
+
+@keyframes coin-spin {
+  from {
+    transform: rotateX(var(--coin-from));
+  }
+  to {
+    transform: rotateX(var(--coin-to));
+  }
+}
+
+@keyframes coin-jump {
+  0% {
+    transform: translateY(0);
+    animation-timing-function: ease-out;
+  }
+  50% {
+    transform: translateY(calc(var(--jump-height) * -1));
+    animation-timing-function: ease-in;
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes coin-shadow {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+    animation-timing-function: ease-out;
+  }
+  50% {
+    transform: scale(0.6);
+    opacity: 0.3;
+    animation-timing-function: ease-in;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coin-animating .coin,
+  .coin-animating .coin-jump,
+  .coin-animating .coin-shadow {
+    animation: none !important;
+  }
+  .coin-animating .coin {
+    transform: rotateX(var(--coin-angle));
+  }
+}
